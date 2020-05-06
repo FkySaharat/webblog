@@ -14,6 +14,10 @@ app.listen(port, () => console.log("Backend server live on " + port));
 
 const blog =require("./controllers/blog.controller.js")
 
+app.get("/", (req,res)=>{
+    res.json({message:"Home"});
+});
+
 //retrieve all
 app.get("/blog/", blog.findAll);
 

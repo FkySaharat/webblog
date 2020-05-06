@@ -23,7 +23,19 @@ exports.create = (req,res)=>{
 };
 
 exports.findAll = (req,res) =>{
-
+    Blog.getAll((err, data) => {
+        console.log(err,data);
+        if (err){
+          res.status(500).send({
+            message:
+              err.message || "Some error occurred while retrieving blogs."
+          });
+        } 
+        else res.status(200).json({messsage:data});
+    });
+      
+      
+     
 };
 
 exports.findOne =(req,res) =>{

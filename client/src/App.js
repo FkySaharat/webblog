@@ -1,4 +1,5 @@
 import React, { Component} from 'react';
+import Blogs from './components/blog';
 import Axios from "axios";
 
 export default class extends Component {
@@ -10,7 +11,7 @@ export default class extends Component {
   }
 
   look(){
-      //var mess='';
+      /*
       Axios({
       method: "GET",
       url: "http://localhost:5000/1",
@@ -20,13 +21,14 @@ export default class extends Component {
     }).then(res => {
       alert(res.data.message);
     });
+    */
   }
   
   render(){
      return (
     <div className="App">
       
-      
+      <Blogs/>
       <button onClick={this.look}>Take the shot!</button>
       
     

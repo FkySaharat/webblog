@@ -9,29 +9,38 @@ exports.create = (req,res)=>{
             messsage:"create failed!!"
         })
     }
-
+    console.log(req.body.userId);
     //create a new blog object
-    const blog = new Blog({
+    const newblog = new Blog({
         title:req.body.title,
         body: req.body.body,
         userId:req.body.userId
     });
 
-    console.log(blog);
+    console.log(newblog);
 
     //using model to add to db
+    Blog.create(newblog,(err,data)=>{
+        if(err){
+            res.status(500).json({
+                message:err.message || "Some error occured!! while creating the new blog"
+            });
+        }
+        else res.status(200).json({message:"create success!!"});
+    });
+    
 };
 
 exports.findAll = (req,res) =>{
     Blog.getAll((err, data) => {
         console.log(err,data);
         if (err){
-          res.status(500).send({
+          res.status(500).json({
             message:
-              err.message || "Some error occurred while retrieving blogs."
+              err.message || "Some error occurred!! while retrieving blogs."
           });
         } 
-        else res.status(200).json({messsage:data});
+        else res.status(200).json({message:data});
     });
       
       
@@ -47,6 +56,20 @@ exports.update = (req,res) =>{
 };
 
 exports.delete =(req,res) =>{
-
+    Blog.remove(req.params.blogId,(err,data)=>{
+        if(err){
+            res.status(500).json({
+            message: "Could not delete this Blog !!!"
+            }); 
+        }
+        else{
+            if(data ==="not_found"){
+                res.json({message:"Try again!!"})
+            }else{
+                res.json({message:"remove success!!!"})
+            }
+        }
+          
+    })
 };
 

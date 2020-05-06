@@ -4,12 +4,11 @@ const sql =require("../database.js")
 const Blog = function(blog){
     this.title = blog.title;
     this.body =blog.body;
-    this.userId =blog.userId;
+    this.user_id =blog.userId;
 }
 
 Blog.getAll = result => {
     sql.query("select * from blogs", function(err, rows) {
-        if (err) throw err;
         if (err){
             result(err,null);
             return;
@@ -20,7 +19,32 @@ Blog.getAll = result => {
         
     });
 
-    
 };
+
+Blog.create = (newBlog, result)=>{
+    //INSERT INTO blogs SET col1=val1, col2=val2, ...
+    sql.query("INSERT INTO blogs SET ?",newBlog,(err,res) =>{
+        if (err){
+            result(err,null);
+            return;
+        }
+
+    });
+};
+
+Blog.remove =(deletedblog,result)=>{
+    sql.query("DELETE FROM blogs WHERE blog_id = ?",deletedblog,(err,res)=>{
+        if (err){
+            result(err,null);
+            return;
+        }
+
+        if (res.affectedRows == 0) {
+            // not found Customer with the id
+            result(null,{ kind: "not_found" });
+            return;
+          }
+    });
+}
 
 module.exports = Blog;

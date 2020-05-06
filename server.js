@@ -1,35 +1,32 @@
 
-const express = require("express"),
-app = express(),
+const express = require("express");
+const bodyParser = require("body-parser");
+
+app = express();
 port = process.env.PORT || 5000,
 cors = require("cors");
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended:true}));
 
 app.use(cors());
 app.listen(port, () => console.log("Backend server live on " + port));
 
+const blog =require("./controllers/blog.controller.js")
+
 //retrieve all
-app.get("/", (req, res) => {
-    res.send({ message: "Please!! log in" });
-});
+app.get("/blog/", blog.findAll);
 
 //retrieve single blog
-app.get('/:blogId',(req,res)=>{
-    res.send({ message: "this blog is"+req.params.blogId})
-});
+app.get('/blog/:blogId',blog.findOne);
 
-//create new blog
-app.post('/:title/:content',(req,res)=>{
-    res.send({ message: "create success!!"})
-});
+//create new blog ,must have json body
+app.post('/blog/',blog.create);
 
 //del blog
-app.delete('/:blogId',(req,res)=>{
-    res.send({ message: "deleted this"+req.params.blogId})
-});
+app.delete('/blog/:blogId',blog.delete);
 
-//edit
-app.put('/:blogId/:title/:content',(req,res)=>{
-    res.send({ message: "edit this"+req.params.blogId})
-});
+//edit ,must have json body
+app.put('/blog/:blogId/',blog.update);
 
 //tax

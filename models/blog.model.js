@@ -13,7 +13,7 @@ Blog.getAll = result => {
             result(err,null);
             return;
         }
-        console.log('blogs : ',rows);
+        //console.log('blogs : ',rows);
         result(null,rows);
       
         
@@ -31,6 +31,15 @@ Blog.create = (newBlog, result)=>{
 
     });
 };
+
+Blog.update =(data,updateblog,result)=>{
+    sql.query("UPDATE blogs SET ? WHERE blog_id = ?",[data,updateblog],(err,res)=>{
+        if(err){
+            result(err,null);
+            return;
+        }
+    });
+}
 
 Blog.remove =(deletedblog,result)=>{
     sql.query("DELETE FROM blogs WHERE blog_id = ?",deletedblog,(err,res)=>{

@@ -52,7 +52,13 @@ exports.findOne =(req,res) =>{
 };
 
 exports.update = (req,res) =>{
-
+    Blog.update(req.body,req.params.blogId,(err,data)=>{
+        if(err){
+            res.status(500).json({
+                message:"Could not update this Blog!!"
+            });
+        }
+    });
 };
 
 exports.delete =(req,res) =>{

@@ -24,6 +24,7 @@ Blog.getAll = result => {
 Blog.create = (newBlog, result)=>{
     //INSERT INTO blogs SET col1=val1, col2=val2, ...
     sql.query("INSERT INTO blogs SET ?",newBlog,(err,res) =>{
+        if(err) throw err
         if (err){
             result(err,null);
             return;

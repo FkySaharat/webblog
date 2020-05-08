@@ -63,8 +63,11 @@ connection.connect(function(err) {
       if(err) throw err
     });
 
-
-
+    connection.query(
+      "INSERT INTO users (user_name,password) VALUES ('test','test')",
+      function(err,result){
+        if(err) throw err
+    });
 
   });
 
@@ -73,10 +76,6 @@ connection.connect(function(err) {
  
   
 /*  
-connection.query("select * from blogs",function(err, rows, fields) {
-    if (err) throw err
-    console.log('The solution is: ',rows)
-  })
 connection.end()
 */
 

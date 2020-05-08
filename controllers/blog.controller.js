@@ -1,5 +1,73 @@
-
+// connect to db;
+const sql =require("../database.js")
 const Blog =require("../models/blog.model.js")
+
+ function getAll(result){
+    sql.query("select * from blogs", function(err, rows) {
+        if (err){
+                result(err,null);
+                return;
+        }
+            
+        if(rows){
+            blogs=[]
+            rows.map(blog=>{
+               
+
+                var newblog = new Blog({
+                    title:blog.title,
+                    body: blog.body,
+                    time:blog.time,
+                    userId:blog.user_id
+                });
+                blogs.push(newblog);
+            }) 
+            console.log("arr",blogs);
+            result(null,blogs);
+        }
+        else result(null,[])
+            
+            
+            
+        });
+    
+};
+    
+const create = (newBlog, result)=>{
+        //INSERT INTO blogs SET col1=val1, col2=val2, ...
+        sql.query("INSERT INTO blogs SET ?",newBlog,(err,res) =>{
+            if(err) throw err
+            if (err){
+                result(err,null);
+                return;
+            }
+    
+        });
+    };
+    
+update =(data,updateblog,result)=>{
+        sql.query("UPDATE blogs SET ? WHERE blog_id = ?",[data,updateblog],(err,res)=>{
+            if(err){
+                result(err,null);
+                return;
+            }
+        });
+    }
+    
+remove =(deletedblog,result)=>{
+        sql.query("DELETE FROM blogs WHERE blog_id = ?",deletedblog,(err,res)=>{
+            if (err){
+                result(err,null);
+                return;
+            }
+    
+            if (res.affectedRows == 0) {
+                // not found Customer with the id
+                result(null,{ kind: "not_found" });
+                return;
+              }
+        });
+}
 
 exports.create = (req,res)=>{
 
@@ -14,13 +82,14 @@ exports.create = (req,res)=>{
     const newblog = new Blog({
         title:req.body.title,
         body: req.body.body,
+        time:new Date(),
         userId:req.body.userId
     });
 
-    console.log(newblog);
+    console.log("newblog",newblog);
 
     //using model to add to db
-    Blog.create(newblog,(err,data)=>{
+    create(newblog,(err,data)=>{
         if(err){
             res.status(500).json({
                 message:err.message || "Some error occured!! while creating the new blog"
@@ -32,8 +101,8 @@ exports.create = (req,res)=>{
 };
 
 exports.findAll = (req,res) =>{
-    Blog.getAll((err, data) => {
-        console.log(err,data);
+    getAll((err, data) => {
+        console.log("findall",data);
         if (err){
           res.status(500).json({
             message:
@@ -77,5 +146,8 @@ exports.delete =(req,res) =>{
         }
           
     })
+
+
+ 
 };
 

@@ -52,7 +52,7 @@ class Blogs extends Component{
             this.setState({blogs:res.data.message});  
             console.log(this.state.blogs);
           });
-        
+          var xhttp = new XMLHttpRequest();
     }
 
     render(){

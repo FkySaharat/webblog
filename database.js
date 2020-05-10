@@ -37,49 +37,70 @@ connection.connect(function(err) {
       ( 
         blog_id int(10)  UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL, 
         title varchar(30), body varchar(255), 
-        time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+        created_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
         user_id int(10) UNSIGNED DEFAULT 1 NOT NULL
       )`,
       function(err,result){
         if(err) throw err
       });
 
+     connection.query(
+       `CREATE TABLE edits 
+       (
+         edit_id int(100) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+         edit_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+         blog_id int(10) UNSIGNED NOT NULL,
+         CONSTRAINT fk_editedblog_id FOREIGN KEY (blog_id) REFERENCES blogs(blog_id)
+       )
+       `,
+       function(err,result){
+        if(err) throw err
+      }); 
+
     connection.query(
       `CREATE TABLE users 
       ( 
         user_id int(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL, 
-        user_name varchar(30) NOT NULL, password varchar(40) NOT NULL
+        user_name varchar(30) NOT NULL, 
+        password varchar(40) NOT NULL,
+        first_name varchar(30) DEFAULT "",
+        last_name varchar(30) DEFAULT "",
+        display_name varchar(40) NOT NULL DEFAULT "",
+        email varchar(30) DEFAULT "",
+        created_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )`,
       function(err,result){
         if(err) throw err
       });  
 
     connection.query(
-      `CREATE TABLE taxs 
+      `CREATE TABLE tags 
       (
-        tax_id int(10)  UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL, 
-        tax_name varchar(40) NOT NULL, 
-        UNIQUE(tax_name)
+        tag_id int(10)  UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL, 
+        tag_name varchar(40) NOT NULL,
+        seen int(10) DEFAULT 0, 
+        UNIQUE(tag_name)
       )`,
       function(err,result){
         if(err) throw err
     });
 
     connection.query(
-      `ALTER TABLE blogs ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(user_id)`,
+      `ALTER TABLE blogs 
+       ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(user_id)`,
     function(err,result){
       if(err) throw err
       console.log("connect blog to user,success!!")
     });
 
     connection.query(
-      `CREATE TABLE blog_tax_junction 
+      `CREATE TABLE blog_tag_junction 
       (
         blog_id int(10) UNSIGNED NOT NULL,
-        tax_id int(10) UNSIGNED NOT NULL, 
-        CONSTRAINT pk_blog_tax PRIMARY KEY(blog_id,tax_id), 
+        tag_id int(10) UNSIGNED NOT NULL, 
+        CONSTRAINT pk_blog_tag PRIMARY KEY(blog_id,tag_id), 
         CONSTRAINT fk_blog_id FOREIGN KEY (blog_id) REFERENCES blogs(blog_id), 
-        CONSTRAINT fk_tax_id FOREIGN KEY (tax_id) REFERENCES taxs(tax_id)
+        CONSTRAINT fk_tag_id FOREIGN KEY (tag_id) REFERENCES tags(tag_id)
       )`,
     function(err,result){
       if(err) throw err

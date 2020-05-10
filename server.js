@@ -18,7 +18,7 @@ app.get("/", (req,res)=>{
     res.json({message:"Home"});
 });
 
-//retrieve all
+//retrieve all 
 app.get("/blog/", blog.findAll);
 
 //retrieve single blog

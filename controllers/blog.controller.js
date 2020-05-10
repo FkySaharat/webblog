@@ -1,19 +1,47 @@
+//Handling request 
 // connect to db;
 const sql =require("../database.js")
 const Blog =require("../models/blog.model.js")
 
- function getAll(result){
+ const getAll =(result)=>{
     sql.query("select * from blogs", function(err, rows) {
         if (err){
-                result(err,null);
-                return;
+            result(err,null);
+            return;
         }
             
         if(rows){
             blogs=[]
             rows.map(blog=>{
-               
+                var newblog = new Blog({
+                    title:blog.title,
+                    body: blog.body,
+                    time:blog.time,
+                    userId:blog.user_id
+                });
+                blogs.push(newblog);
+            }) 
+            console.log("arr",blogs);
+            result(null,blogs);
+        }
+        else result(null,[]);
 
+    });
+    
+}
+
+const getBy =(filter,result)=>{
+    sql.query("select * from blogs where ?",filter, function(err,rows){
+        if (err){
+            result(err,null);
+            return;
+        }
+        console.log(rows);
+
+        if(rows.length){
+            console.log(rows);
+            blogs=[]
+            rows.map(blog=>{
                 var newblog = new Blog({
                     title:blog.title,
                     body: blog.body,
@@ -26,26 +54,40 @@ const Blog =require("../models/blog.model.js")
             result(null,blogs);
         }
         else result(null,[])
-            
-            
-            
-        });
-    
-};
-    
+       
+    });
+   
+}
+
+const getOne =(seletedblog,result)=>{
+    console.log("sel",seletedblog);
+    sql.query("SELECT * FROM blogs WHERE blog_id = ?",seletedblog,(err,row)=>{
+        if(err) throw err
+        if(row.length){
+            console.log("row->",row);
+            var blog =row[0];
+            var newblog = new Blog({
+                title:blog.title,
+                body: blog.body,
+                time:blog.time,
+                userId:blog.user_id
+            });
+            result(null,newblog)
+            return; 
+        }
+        else result(null,[]);
+    });
+}
+
 const create = (newBlog, result)=>{
         //INSERT INTO blogs SET col1=val1, col2=val2, ...
         sql.query("INSERT INTO blogs SET ?",newBlog,(err,res) =>{
             if(err) throw err
-            if (err){
-                result(err,null);
-                return;
-            }
-    
+            return;
         });
     };
     
-update =(data,updateblog,result)=>{
+const update =(data,updateblog,result)=>{
         sql.query("UPDATE blogs SET ? WHERE blog_id = ?",[data,updateblog],(err,res)=>{
             if(err){
                 result(err,null);
@@ -54,7 +96,7 @@ update =(data,updateblog,result)=>{
         });
     }
     
-remove =(deletedblog,result)=>{
+const remove =(deletedblog,result)=>{
         sql.query("DELETE FROM blogs WHERE blog_id = ?",deletedblog,(err,res)=>{
             if (err){
                 result(err,null);
@@ -62,8 +104,9 @@ remove =(deletedblog,result)=>{
             }
     
             if (res.affectedRows == 0) {
+                console.log("del",res);
                 // not found Customer with the id
-                result(null,{ kind: "not_found" });
+                result(null,"not_found");
                 return;
               }
         });
@@ -101,47 +144,71 @@ exports.create = (req,res)=>{
 };
 
 exports.findAll = (req,res) =>{
-    getAll((err, data) => {
-        console.log("findall",data);
-        if (err){
-          res.status(500).json({
-            message:
-              err.message || "Some error occurred!! while retrieving blogs."
-          });
-        } 
-        else res.status(200).json({message:data});
-    });
+    
+    //console.log(Object.keys(req.body).length);
+    if(Object.keys(req.body).length){
+        console.log("find by sth.",req.body);
+        getBy(req.body,(err,data)=>{
+            if(err){
+                res.status(500).json({
+                    message:err.message || "Some error occured!! while finding by"
+                });
+            }
+            else res.status(200).json({message:data});
+        });
+    }
+    else{
+        getAll((err, data) => {
+            if (err){
+                res.status(500).json({
+                    message:err.message || "Some error occurred!! while retrieving blogs."
+                });
+            } 
+            else res.status(200).json({message:data});
+        });
+    }
+    
       
       
      
 };
 
 exports.findOne =(req,res) =>{
-
-};
-
-exports.update = (req,res) =>{
-    Blog.update(req.body,req.params.blogId,(err,data)=>{
+    getOne(req.params.blogId,(err,data)=>{
         if(err){
             res.status(500).json({
-                message:"Could not update this Blog!!"
-            });
+                message:err.message || "Some error occurred!! while retrieving blog."
+            })
         }
+        else res.status(200).json({message:data});
     });
 };
 
-exports.delete =(req,res) =>{
-    Blog.remove(req.params.blogId,(err,data)=>{
+exports.update = (req,res) =>{
+    update(req.body,req.params.blogId,(err,data)=>{
         if(err){
             res.status(500).json({
-            message: "Could not delete this Blog !!!"
+                message:err.message ||"Could not update this Blog!!"
+            });
+        }
+        else res.status(200).json({message:"update sucess!!"});
+    });
+};
+
+//single delete
+exports.delete =(req,res) =>{
+    remove(req.params.blogId,(err,data)=>{
+        if(err){
+            res.status(500).json({
+            message: err.message || "Could not delete this Blog !!!"
             }); 
         }
         else{
+            console.log("datadel",data)
             if(data ==="not_found"){
-                res.json({message:"Try again!!"})
+                res.status(200).json({message:"Try again!!"})
             }else{
-                res.json({message:"remove success!!!"})
+                res.status(200).json({message:"remove success!!!"})
             }
         }
           

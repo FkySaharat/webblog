@@ -1,4 +1,4 @@
-
+//shape of data 
 
 const Blog = function(blog){
     this.title = blog.title;

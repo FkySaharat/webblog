@@ -1,27 +1,34 @@
 import React, { Component} from 'react';
-import Blogs from './components/blog';
-import Axios from "axios";
+import Blogs from './components/blogs';
+
 
 export default class extends Component {
   constructor(){
     super();
     this.state={
-      message:''
+      message:[]
     }
+    this.pus=this.pus.bind(this);
+    this.minus=this.minus.bind(this);
   }
 
-  look(){
-      /*
-      Axios({
-      method: "GET",
-      url: "http://localhost:5000/1",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }).then(res => {
-      alert(res.data.message);
-    });
-    */
+  pus(){
+    console.log("bef");
+    const test=()=>{
+      var temp=this.state.message;
+      temp.push(1)
+      this.setState({message:temp});
+    }
+    test();
+    console.log("aft");
+  }
+
+  minus(){
+    var temp=this.state.message;
+    
+    temp.pop()
+    this.setState({message:temp});
+
   }
   
   render(){
@@ -29,7 +36,9 @@ export default class extends Component {
     <div className="App">
       
       <Blogs/>
-      <button onClick={this.look}>Take the shot!</button>
+     <div>{this.state.message}</div>
+     <button onClick={()=>this.pus()}>+</button>
+     <button onClick={this.minus}>-</button>
       
     
     </div>

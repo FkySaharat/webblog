@@ -14,9 +14,10 @@ const Blog =require("../models/blog.model.js")
             blogs=[]
             rows.map(blog=>{
                 var newblog = new Blog({
+                    blog_id:blog.blog_id,
                     title:blog.title,
                     body: blog.body,
-                    time:blog.time,
+                    created_time:blog.created_time,
                     userId:blog.user_id
                 });
                 blogs.push(newblog);
@@ -43,9 +44,10 @@ const getBy =(filter,result)=>{
             blogs=[]
             rows.map(blog=>{
                 var newblog = new Blog({
+                    blog_id:blog.blog_id,
                     title:blog.title,
                     body: blog.body,
-                    time:blog.time,
+                    created_time:blog.created_time,
                     userId:blog.user_id
                 });
                 blogs.push(newblog);
@@ -67,9 +69,10 @@ const getOne =(seletedblog,result)=>{
             console.log("row->",row);
             var blog =row[0];
             var newblog = new Blog({
+                blog_id:blog.blog_id,
                 title:blog.title,
                 body: blog.body,
-                time:blog.time,
+                created_time:blog.created_time,
                 userId:blog.user_id
             });
             result(null,newblog)
@@ -125,7 +128,7 @@ exports.create = (req,res)=>{
     const newblog = new Blog({
         title:req.body.title,
         body: req.body.body,
-        time:new Date(),
+        created_time:new Date(),
         userId:req.body.userId
     });
 

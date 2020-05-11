@@ -96,6 +96,7 @@ const update =(data,updateblog,result)=>{
                 result(err,null);
                 return;
             }
+            else result(null,res);
         });
     }
     
@@ -111,7 +112,8 @@ const remove =(deletedblog,result)=>{
                 // not found Customer with the id
                 result(null,"not_found");
                 return;
-              }
+            }
+            else result(null,res);
         });
 }
 

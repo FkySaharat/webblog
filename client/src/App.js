@@ -1,6 +1,6 @@
 import React, { Component} from 'react';
 import Blogs from './components/blogs';
-
+import CreateForm from './components/form';
 
 export default class extends Component {
   constructor(){
@@ -8,37 +8,24 @@ export default class extends Component {
     this.state={
       message:[]
     }
-    this.pus=this.pus.bind(this);
-    this.minus=this.minus.bind(this);
+    this.show=this.show.bind(this);
+  
   }
 
-  pus(){
-    console.log("bef");
-    const test=()=>{
-      var temp=this.state.message;
-      temp.push(1)
-      this.setState({message:temp});
-    }
-    test();
-    console.log("aft");
-  }
-
-  minus(){
-    var temp=this.state.message;
-    
-    temp.pop()
-    this.setState({message:temp});
+  show(){
 
   }
   
   render(){
      return (
-    <div className="App">
+    <div className="App"  >
       
+      <CreateForm/>
       <Blogs/>
+      
      <div>{this.state.message}</div>
-     <button onClick={()=>this.pus()}>+</button>
-     <button onClick={this.minus}>-</button>
+     <button onClick={()=>this.show()}>create</button>
+
       
     
     </div>

@@ -34,8 +34,8 @@ class Blogs extends Component{
 
    async deleteBlog(bid){
         
-        var Id = String(bid)
-        console.log(Id);
+      var Id = String(bid)
+      console.log(Id);
 
       Axios(
           {
@@ -57,15 +57,15 @@ class Blogs extends Component{
         }
       )
      
-        console.log(updated.data.message);
+        //console.log(updated.data.message);
        
-        this.setState({blogs:updated.data.message})
-       console.log("after")
+      this.setState({blogs:updated.data.message})
+      
     }
 
     render(){
         return(
-             <Grid container  direction="column" justify="flex-start" alignItems="center" spacing={2} style={{backgroundColor:'#F2F3F4'}} >
+             <Grid container  direction="column" justify="flex-start" alignItems="center" spacing={2} >
               
                {this.state.blogs.map(m=>{
                     return <Grid key={m.blog_id}  item xs  style={{ width:'500px'}}>

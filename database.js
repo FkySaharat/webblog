@@ -78,7 +78,7 @@ connection.connect(function(err) {
       (
         tag_id int(10)  UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL, 
         tag_name varchar(40) NOT NULL,
-        seen int(10) DEFAULT 0, 
+        seen int(10)  DEFAULT 0, 
         UNIQUE(tag_name)
       )`,
       function(err,result){

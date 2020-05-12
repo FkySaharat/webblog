@@ -6,25 +6,27 @@ export default class extends Component {
   constructor(){
     super();
     this.state={
-      message:[]
+      visible:'hidden'
     }
-    this.show=this.show.bind(this);
+    this.showCreateForm=this.showCreateForm.bind(this);
   
   }
 
-  show(){
-
+  showCreateForm(){
+    
+    this.setState({visible:'visible'})
+    console.log("app",this.state.visible)
   }
   
   render(){
      return (
     <div className="App"  >
       
-      <CreateForm/>
-      <Blogs/>
+      <CreateForm show={this.state.visible}/>
+      
       
      <div>{this.state.message}</div>
-     <button onClick={()=>this.show()}>create</button>
+     <button onClick={()=>this.showCreateForm()}>create</button>
 
       
     

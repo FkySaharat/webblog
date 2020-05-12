@@ -1,7 +1,23 @@
 .Container{
-    
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
     margin-top: 10px;
-    width: 80%;
+    width: 60%;
     min-height: 700px;
     background-color: '#F2F3F4';
+    z-index: 1;
+}
+
+.content{  
+    width: 100%;
+    margin: 12px;
+    padding:6px;;
+}
+
+.create{
+    margin: 2px;
 }

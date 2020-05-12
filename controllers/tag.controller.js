@@ -12,6 +12,7 @@ const createTag=(newTag,result)=>{
         ,[newTag.tag_name,newTag.tag_name],(err,res)=>{
         if(err) throw err;
         result(null,res);
+        //res.InsertId
     });
 
 }
@@ -43,9 +44,27 @@ const getOne=(tagname,result)=>{
     })
 }
 
-const removeTagFromBlog=(blog_id,tagname,result)=>{
+const removeTagFromBlog=(blog_id,tag_name,result)=>{
+    sql.query("DELETE FROM blog_tag_junction WHERE blog_id=? AND tag_id=(SELECT tag_id FROM tags WHERE tag_name = ?)"
+    ,[blog_id,tag_name],(err,res)=>{
+        if(err) throw err;
+        sql.query("SELECT COUNT(tag_id) FROM  blog_tag_junction WHERE tag_id=(SELECT tag_id FROM tags WHERE tag_name = ?)"
+        ,tag_name,(err,rows)=>{
+            if(err) throw err;
+             result(null,rows);
+        })
+       
+    })
     
 }
+
+const removeTag=(tag_name,result)=>{
+    sql.query("DELETE FROM tags WHERE tag_name = ?",tag_name,(err,res)=>{
+        if(err) throw err;
+        result(null,res);
+    })
+}
+
 exports.create=(req,res)=>{
 
     const newTag = new Tag({
@@ -57,13 +76,7 @@ exports.create=(req,res)=>{
             res.status(500).json({message:"failed !!!"})
         }
         console.log(rows);
-    }).then(bindTagBlog(blog_id,tag_name,(err,rows)=>{
-        if(err){
-            res.status(500).json({message:"failed !!!"})
-        }else{
-            res.status(200).json({message:rows})
-        }
-    }))
+    })
       
 }
 
@@ -87,6 +100,8 @@ exports.findOne=(req,res)=>{
     })
 }
 
+
+//blog_id,tag_name
 exports.delete=(req,res)=>{
     //if not exist in conjunction , tag ables to delete from tag
     //if exist in conjunction

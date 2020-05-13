@@ -37,6 +37,7 @@ exports.create = (req,res)=>{
                 res.status(500).json({message:"fail"})
                 return (err)
             }
+            console.log("create blog",blog);
 
             listOftag.map(eachTag=>{
                 console.log("each",eachTag);
@@ -47,7 +48,7 @@ exports.create = (req,res)=>{
                     }
                     //Tag is already have.
                     if(tag.insertId == 0){
-                        tagQuery.getOne(tag.insertId,(err,oldtag)=>{
+                        tagQuery.getOne(eachTag.tag_name,(err,oldtag)=>{
                             if(err){
                                 res.status(500).json({message:"fail"})
                                 return (err)
@@ -57,7 +58,7 @@ exports.create = (req,res)=>{
                                     res.status(500).json({message:"fail"})
                                     return (err)
                                 }
-                                res.status(200).json({message:rows});
+                                console.log("get the same tag");
                             })
                         })
                     }
@@ -67,15 +68,15 @@ exports.create = (req,res)=>{
                                 res.status(500).json({message:"fail"})
                                 return (err)
                             }
-                            console.log("added tag is done")
-                            console.log(rows);
-                            
+                            console.log("added tag is done");
+  
                         }) 
                     }
                             
                 });
             });
             res.status(200).json({message:"added tag is done"});
+            return;
         });
 
     

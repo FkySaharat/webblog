@@ -9,7 +9,10 @@ exports.bindTagToBlog=(tag_id,blog_id,result)=>{
         VALUES (?,?)`,
         [tag_id,blog_id],
         function(err,rows){
-            if(err) throw err;
+            if(err){
+                console.log(err);
+                result(err,null);
+            };
             result(null,rows);
         }
     );

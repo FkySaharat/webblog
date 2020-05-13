@@ -38,13 +38,32 @@ exports.create = (req,res)=>{
                     res.status(500).json({message:"fail"})
                     return (err)
                 }
-                tagblogQuery.bindTagToBlog(tag.insertId,blog.insertId,(err,rows)=>{
-                    if(err){
-                        res.status(500).json({message:"fail"})
-                        return (err)
-                    }
-                    res.status(200).json({message:rows});
-                })
+                //Tag is already have.
+                if(tag.insertId == 0){
+                    tagQuery.getOne(tag.insertId,(err,oldtag)=>{
+                        if(err){
+                            res.status(500).json({message:"fail"})
+                            return (err)
+                        }
+                        tagblogQuery.bindTagToBlog(oldtag[0].tag_id,blog.insertId,(err,rows)=>{
+                            if(err){
+                                res.status(500).json({message:"fail"})
+                                return (err)
+                            }
+                            res.status(200).json({message:rows});
+                        })
+                    })
+                }
+                else{
+                    tagblogQuery.bindTagToBlog(tag.insertId,blog.insertId,(err,rows)=>{
+                        if(err){
+                            res.status(500).json({message:"fail"})
+                            return (err)
+                        }
+                        res.status(200).json({message:rows});
+                    }) 
+                }
+               
             })
         })
 
@@ -107,20 +126,30 @@ exports.update = (req,res) =>{
 
 //single delete
 exports.delete =(req,res) =>{
-    blogQuery.remove(req.params.blogId,(err,data)=>{
+
+    var blog = req.params.blogId;
+
+    tagblogQuery.removeBlogFromTags(blog,(err,rows)=>{
         if(err){
             res.status(500).json({message: err.message || "Could not delete this Blog !!!"}); 
         }
-        else{
-            console.log("datadel",data)
-            if(data ==="not_found"){
-                res.status(200).json({message:"Try again!!"})
-            }else{
-                res.status(200).json({message:"remove success!!!"})
+
+        blogQuery.remove(blog,(err,data)=>{
+            if(err){
+                res.status(500).json({message: err.message || "Could not delete this Blog !!!"}); 
             }
-        }
-          
-    })
+            else{
+                console.log("datadel",data)
+                if(data ==="not_found"){
+                    res.status(200).json({message:"Try again!!"})
+                }else{
+                    res.status(200).json({message:"remove success!!!"})
+                }
+            }
+        });
+    });
+
+    
 
 
  

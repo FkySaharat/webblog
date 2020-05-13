@@ -6,23 +6,23 @@ export default class extends Component {
   constructor(){
     super();
     this.state={
-      visible:'hidden'
+      isShow:'hidden'
     }
     this.showCreateForm=this.showCreateForm.bind(this);
   
   }
 
   showCreateForm(){
-    
-    this.setState({visible:'visible'})
-    console.log("app",this.state.visible)
+     this.setState({isShow:'visible'})
   }
   
   render(){
-     return (
+    console.log("isShow",this.state.isShow) 
+    return (
     <div className="App"  >
+
+       <CreateForm show={this.state.isShow}/>
       
-      <CreateForm show={this.state.visible}/>
       
       
      <div>{this.state.message}</div>
